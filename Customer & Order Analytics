@@ -1,0 +1,39 @@
+#In this SQL, I'm querying a database with multiple tables in it to quantify statistics about customer and order data. 
+
+--How many unique orders were placed in January?
+SELECT COUNT(distinct orderID)
+FROM BIT_DB.JanSales
+WHERE length(orderID) = 6
+AND orderID <> 'Order ID';
+
+
+--How many of those orders were for an iPhone?
+SELECT COUNT(distinct orderID)
+FROM BIT_DB.JanSales
+WHERE Product = 'iPhone'
+AND length(orderID) = 6
+AND orderID <> 'Order ID';
+
+--Select the customer account numbers for all the orders that were placed in February
+SELECT distinct cust.acctnum
+FROM BIT_DB.customers cust
+INNER JOIN BIT_DB.FebSales feb
+ON feb.orderID = cust.order_id
+WHERE length(orderID) = 6
+AND orderID <> 'Order ID';
+
+--Which product was the cheapest one sold in January and what was the price?
+SELECT distinct Product, price
+FROM BIT_DB.JanSales
+ORDER BY price limit 1;
+
+--How many customers ordered more than 2 products at a time in February, and what was the average amount spent for those customers?
+SELECT count(distinct cust.acctnum) num_of_customers
+,avg(quantity*price) avg_spent
+FROM BIT_DB.FebSales feb
+LEFT JOIN BIT_DB.customers cust
+ON feb.orderid=cust.order_id
+WHERE feb.Quantity>2
+AND length(orderid) = 6
+AND orderid <> 'Order ID';
+
